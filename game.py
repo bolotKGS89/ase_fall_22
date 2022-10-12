@@ -63,8 +63,6 @@ class Game:
             no_winner = True
         return no_winner and move_not_played
 
-
-
     def process_move(self, move):
         """Process the current move and check if it's a win."""
         row, col = move.row, move.col
@@ -83,6 +81,17 @@ class Game:
         """Return True if the game is tied, and False otherwise."""
         # TODO: check whether a tie was reached.
         # There is no winner and all moves have been tried.
+
+        tied=True
+        no_winner=False
+        """Return True if the game is tied, and False otherwise."""
+        if self._has_winner == False:
+            no_winner=not self._has_winner
+            for row in self._current_moves:
+                for move in row:
+                    if move.label=="":
+                        tied=False         
+        return no_winner and tied
 
     def toggle_player(self):
         """Return a toggled player."""
