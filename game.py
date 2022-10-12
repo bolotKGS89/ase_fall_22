@@ -54,7 +54,6 @@ class Game:
     def is_valid_move(self, move):
         """Return True if move is valid, and False otherwise."""
         row, col = move.row, move.col
-        
         # TODO: check that the current move has not been played already 
         # and that there is no winner yet. Note that non-played cells
         # contain an empty string (i.e. ""). 
@@ -65,8 +64,7 @@ class Game:
     def process_move(self, move):
         """Process the current move and check if it's a win."""
         row, col = move.row, move.col
-        
-
+        self._current_moves[row][col] = move
         # TODO: check whether the current move leads to a winning combo.
         # Do not return any values but set variables  self._has_winner 
         # and self.winner_combo in case of winning combo.
@@ -78,14 +76,19 @@ class Game:
         return self._has_winner
 
     def is_tied(self):
+        tied=True
+        no_winner=False
         """Return True if the game is tied, and False otherwise."""
-        
-        # TODO: check whether a tie was reached.
-        # There is no winner and all moves have been tried.
+        if self._has_winner == False:
+            no_winner=not self._has_winner
+            for row in self._current_moves:
+                for move in row:
+                    if move.label=="":
+                        tied=False         
+        return no_winner and tied
 
     def toggle_player(self):
         """Return a toggled player."""
-        self.current_player = next(self._players)
         # TODO: switches self.current_player to the other player.
         # Hint: https://docs.python.org/3/library/functions.html#next
        
