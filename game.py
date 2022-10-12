@@ -54,11 +54,16 @@ class Game:
     def is_valid_move(self, move):
         """Return True if move is valid, and False otherwise."""
         row, col = move.row, move.col
-        # TODO: check that the current move has not been played already 
-        # and that there is no winner yet. Note that non-played cells
-        # contain an empty string (i.e. ""). 
-        # Use variables no_winner and move_not_played.
-        
+        move_not_played=True
+        no_winner=True
+        row, col = move.row, move.col
+        if (move.col,move.row) in self._current_moves:
+            move_not_played=False
+        no_winner= not self._has_winner
+        if self._has_winner== True:
+            no_winner = False
+        else:
+            no_winner = True
         return no_winner and move_not_played
 
     def process_move(self, move):
