@@ -1,5 +1,5 @@
 from itertools import cycle
-# from lib2to3.pytree import _Results
+from lib2to3.pytree import _Results
 from shutil import move
 from typing import NamedTuple
 from unittest import result
@@ -54,22 +54,29 @@ class Game:
     def is_valid_move(self, move):
         """Return True if move is valid, and False otherwise."""
         row, col = move.row, move.col
-        move_not_played=True
-        no_winner=True
-        row, col = move.row, move.col
-        if (move.col,move.row) in self._current_moves:
-            move_not_played=False
-        no_winner= not self._has_winner
-        if self._has_winner== True:
-            no_winner = False
-        else:
-            no_winner = True
+        move_not_played = self._current_moves[row][col].label==""
+        no_winner = not self._has_winner 
+    
+        # TODO: check that the current move has not been played already 
+        # and that there is no winner yet. Note that non-played cells
+        # contain an empty string (i.e. ""). 
+        # Use variables no_winner and move_not_played.
+        
         return no_winner and move_not_played
 
     def process_move(self, move):
         """Process the current move and check if it's a win."""
         row, col = move.row, move.col
         self._current_moves[row][col] = move
+        for combo in self._winning_combos:
+            results = set(self._current_moves[n][m].label 
+            for n,m in combo)
+            is_win = (len(results)== 1) and (""not in results)
+            if is_win:
+                self._has_winner = True
+                self.winner_combo =combo
+                break
+
         # TODO: check whether the current move leads to a winning combo.
         # Do not return any values but set variables  self._has_winner 
         # and self.winner_combo in case of winning combo.
@@ -82,24 +89,17 @@ class Game:
 
     def is_tied(self):
         """Return True if the game is tied, and False otherwise."""
+        no_winner = not self._has_winner
+        played_moves = (move.label for row in self._current_moves for move in row )
+        return no_winner and all (played_moves)
         # TODO: check whether a tie was reached.
         # There is no winner and all moves have been tried.
-        tied=True
-        no_winner=False
-        """Return True if the game is tied, and False otherwise."""
-        if self._has_winner == False:
-            no_winner=not self._has_winner
-            for row in self._current_moves:
-                for move in row:
-                    if move.label=="":
-                        tied=False         
-        return no_winner and tied
 
     def toggle_player(self):
         """Return a toggled player."""
+        self.current_player = next(self._players)
         # TODO: switches self.current_player to the other player.
         # Hint: https://docs.python.org/3/library/functions.html#next
-        self.current_player = next(self._players)
        
     def reset_game(self):
         """Reset the game state to play again."""
